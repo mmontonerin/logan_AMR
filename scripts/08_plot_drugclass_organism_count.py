@@ -16,10 +16,10 @@ df_unique = df[['acc', 'metagenome_category']].drop_duplicates()
 metagenome_counts = df_unique['metagenome_category'].value_counts()
 
 # ---- STEP 2: Get the top 5 most common ARO_DrugClass ----
-top_5_drug_classes = df['first_aro_drug_class'].value_counts().nlargest(5).index.tolist()
+top_15_drug_classes = df['first_aro_drug_class'].value_counts().nlargest(15).index.tolist()
 
 # Replace all other drug classes with "Other"
-df['drug_class_grouped'] = df['first_aro_drug_class'].apply(lambda x: x if x in top_5_drug_classes else "Other")
+df['drug_class_grouped'] = df['first_aro_drug_class'].apply(lambda x: x if x in top_15_drug_classes else "Other")
 
 # ---- STEP 3: Calculate the percentage distribution of ARO_DrugClass ----
 drug_distribution = df.groupby(['metagenome_category', 'drug_class_grouped']).size().unstack(fill_value=0)
@@ -33,18 +33,18 @@ fig, ax = plt.subplots(figsize=(12, 6))
 categories = metagenome_counts.index
 x = np.arange(len(categories))  # X positions for bars
 
-bar_width = 0.4  # Width of each bar
+bar_width = 1  # Width of each bar
 
 # Bar plot for total unique acc per metagenome_category
-ax.bar(x - bar_width/2, metagenome_counts.values, width=bar_width, label='Total Unique ACCs', color='lightblue')
+#ax.bar(x - bar_width/2, metagenome_counts.values, width=bar_width, label='Total Unique ACCs', color='lightblue')
 
 # Stacked bars for ARO_DrugClass percentages
-colors = plt.cm.Paired(np.linspace(0, 1, len(top_5_drug_classes) + 1))  # +1 for "Other"
+colors = plt.cm.tab20b(np.linspace(0, 1, len(top_15_drug_classes) + 1))  # +1 for "Other"
 bottoms = np.zeros(len(categories))
 
-for i, drug_class in enumerate(top_5_drug_classes + ['Other']):  # Include "Other"
+for i, drug_class in enumerate(top_15_drug_classes + ['Other']):  # Include "Other"
     ax.bar(
-        x + bar_width/2,  # Shift right to place next to count bars
+        x,
         drug_distribution_percentage[drug_class].reindex(categories, fill_value=0).values * (metagenome_counts.values / 100), 
         width=bar_width, 
         bottom=bottoms, 
@@ -63,4 +63,4 @@ ax.legend(title='ARO Drug Class', bbox_to_anchor=(1.05, 1), loc='upper left')
 
 plt.xticks(rotation=90)
 plt.tight_layout()
-plt.savefig('./data/metacategory_and_drugclass_counts.png', dpi=800)
+plt.savefig('./data/metacategory_and_drugclass_counts15top.png', dpi=800)
