@@ -12,7 +12,7 @@ amr_df = pd.read_csv(
     "../data/full_card_metadata_aro_allfilters_metagenomes2.csv",
     low_memory=False)
 
-sra_df = pd.read_csv("../data/SRA_metadata_allfilters.csv", low_memory=False)
+sra_df = pd.read_csv("../data/SRA_metadata_allfilters_logan.csv", low_memory=False) # New one with only-Logan available entries
 
 # Function to prepare tables to have date as year bins
 def date_collection(df):
@@ -35,7 +35,7 @@ tot_cat_df = (
     sra_df
       .groupby(["quarter_bin", "metagenome_category"])["acc"]
       .nunique()
-      .unstack(fill_value=0)          # quarters × category
+      .unstack(fill_value=0)
       .sort_index()
 )
 
@@ -99,8 +99,8 @@ for cat in categories:
     ax.set_xticklabels(year_labs, rotation=0)
     ax.legend(title="Continent", bbox_to_anchor=(1.02, 1), loc="upper left")
     plt.tight_layout()
-    fig.savefig(f"../data/discovery_timeline_{cat}_positive_continents.png", dpi=600)
-    fig.savefig(f"../data/discovery_timeline_{cat}_positive_continents.svg")
+    fig.savefig(f"../data/discovery_timeline_{cat}_positive_continents_logan.png", dpi=600)
+    fig.savefig(f"../data/discovery_timeline_{cat}_positive_continents_logan.svg")
     plt.close()
 
     # Total and positives
@@ -151,6 +151,6 @@ for cat in categories:
     ax.set_xlim(-1, len(x))      # a little padding
     ax.legend(frameon=False, bbox_to_anchor=(1.02, 1), loc="upper left")
     plt.tight_layout()
-    fig.savefig(f"../data/discovery_timeline_{cat}_total_vs_positive_continents.png", dpi=600)
-    fig.savefig(f"../data/discovery_timeline_{cat}_total_vs_positive_continents.svg")
+    fig.savefig(f"../data/discovery_timeline_{cat}_total_vs_positive_continents_logan.png", dpi=600)
+    fig.savefig(f"../data/discovery_timeline_{cat}_total_vs_positive_continents_logan.svg")
     plt.close()

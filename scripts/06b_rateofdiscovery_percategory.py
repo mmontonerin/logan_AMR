@@ -12,7 +12,9 @@ amr_df = pd.read_csv(
     "../data/full_card_metadata_aro_allfilters_metagenomes2.csv",
     low_memory=False)
 
-sra_df = pd.read_csv("../data/SRA_metadata_allfilters.csv", low_memory=False)
+#sra_df = pd.read_csv("../data/SRA_metadata_allfilters.csv", low_memory=False) # Old one
+
+sra_df = pd.read_csv("../data/SRA_metadata_allfilters_logan.csv", low_memory=False) # New one with only SRA entries that were assembled in Logan
 
 # Function to prepare tables to have date as year bins
 def date_collection(df):
@@ -85,8 +87,8 @@ for cat in categories:
     ax.set_xticks(year_pos)
     ax.set_xticklabels(year_labs, rotation=0)
     plt.tight_layout()
-    fig.savefig(f"../data/discovery_timeline_{cat}_positive.png", dpi=600)
-    fig.savefig(f"../data/discovery_timeline_{cat}_positive.svg")
+    fig.savefig(f"../data/discovery_timeline_{cat}_positive_logan.png", dpi=600)
+    fig.savefig(f"../data/discovery_timeline_{cat}_positive_logan.svg")
     plt.close()
 
     ## Stacked: total (grey) and positive (colour)
@@ -120,6 +122,6 @@ for cat in categories:
     ax.set_xticklabels(year_labs, rotation=0)
     ax.legend(frameon=False, loc="upper left")
     plt.tight_layout()
-    fig.savefig(f"../data/discovery_timeline_{cat}_stacked.png", dpi=600)
-    fig.savefig(f"../data/discovery_timeline_{cat}_stacked.svg")
+    fig.savefig(f"../data/discovery_timeline_{cat}_stacked_logan.png", dpi=600)
+    fig.savefig(f"../data/discovery_timeline_{cat}_stacked_logan.svg")
     plt.close()
