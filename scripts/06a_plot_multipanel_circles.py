@@ -16,9 +16,10 @@ amr_df = pd.read_csv(
 sra_df = pd.read_csv("../data/SRA_metadata_allfilters.csv", 
     low_memory=False)
 
-# Only keep most relevant drug classes (7)
+# Only keep most relevant drug classes (9)
 drug_classes_to_keep = {
-    "glycopeptide antibiotic", 
+    "macrolide antibiotic", "glycopeptide antibiotic",
+    "lincosamide antibiotic",
     "tetracycline antibiotic", "fluoroquinolone antibiotic",
     "aminoglycoside antibiotic", "penicillin beta-lactam",
     "glycylcycline", "cephalosporin"
@@ -345,3 +346,112 @@ for cat in sorted(dot_data["metagenome_category"].unique()):
     plt.close(g_cat.figure)          # important to free memory in long loops
 
 print("Per-category figures saved to:", out_dir.resolve())
+
+# --------------------------------------------------------------------
+# 6  FACETTED GRIDS – ONLY WORLDWIDE DATA
+# --------------------------------------------------------------------
+
+world_dot_data = dot_data.query(
+    "geo_loc_name_country_continent_calc == 'Worldwide'"
+).copy()
+
+col_order = sorted(world_dot_data["metagenome_category"].unique())
+
+g_world = sns.relplot(
+    data      = world_dot_data,
+    x         = "year_bin",
+    y         = "prevalence",
+    hue       = "metagenome_category",
+    col       = "metagenome_category",
+    col_order = col_order,
+    row       = "ARO_DrugClass",
+    kind      = "scatter",
+    size      = "total_samples",
+    sizes     = (20, 600),
+    alpha     = .45,
+    facet_kws = dict(sharey=False),
+    height    = 3.2,
+    aspect    = 1.1,
+    palette   = color_dict,
+    legend    = "brief"          # ← identical to your earlier grid
+)
+
+# LOWESS overlay – same logic as Section 3
+for (row_lab, col_lab), ax in g_world.axes_dict.items():
+    drug = row_lab
+    cat  = col_lab
+    pts  = world_dot_data[
+        (world_dot_data["ARO_DrugClass"] == drug) &
+        (world_dot_data["metagenome_category"] == cat)
+    ]
+    if pts.empty:
+        ax.set_axis_off()
+        continue
+    if len(pts) >= 5:
+        smoothed = lowess(
+            pts["prevalence"], pts["year_bin"],
+            frac=0.55, return_sorted=True
+        )
+        ax.plot(
+            smoothed[:, 0], smoothed[:, 1],
+            color     = color_dict[cat],
+            linewidth = 5,
+            alpha     = .85,
+            zorder    = 1
+        )
+
+# Cosmetic tweaks – mirrors Section 4
+for ax in g_world.axes.flatten():
+    ax.set_ylim(0, 1.05)
+
+g_world.set_axis_labels("Year", "Prevalence")
+g_world.set_titles("")
+
+for ax, cat in zip(g_world.axes[0], g_world.col_names):
+    ax.set_title(cat, fontweight="bold", pad=20)
+
+for ax, drug in zip(g_world.axes[:, 0], g_world.row_names):
+    ax.set_ylabel(drug, rotation=90, labelpad=20,
+                  fontweight="bold", va="center")
+
+for ax in g_world.axes.flatten():
+    if ax not in g_world.axes[:, 0]:
+        ax.set_ylabel("")
+    ax.tick_params(axis="y", labelrotation=90)
+    ax.set_xlabel("")
+for ax in g_world.axes[-1]:
+    ax.set_xlabel("Year")
+
+# ------------------------ standalone legend -------------------------
+handles, labels = [], []
+for ax in g_world.axes.flat:
+    handles, labels = ax.get_legend_handles_labels()
+    if handles:
+        break
+
+if getattr(g_world, "_legend", None) is not None:
+    g_world._legend.remove()
+for ax in g_world.axes.flat:
+    ax.legend_.remove() if ax.get_legend() else None
+
+# never let the height go to zero (avoids singular-matrix error)
+fig_h = max(0.42 * len(labels), 0.42)
+
+leg_fig, leg_ax = plt.subplots(figsize=(2.4, fig_h))
+leg_ax.axis("off")
+leg_ax.legend(
+    handles, labels,
+    title="Metagenome category",
+    frameon=False, ncol=1,
+    handlelength=2, labelspacing=1.1
+)
+
+leg_fig.tight_layout()
+leg_fig.savefig("../data/bubbles_worldwide_legend.png", dpi=600, bbox_inches="tight")
+leg_fig.savefig("../data/bubbles_worldwide_legend.svg", bbox_inches="tight")
+plt.close(leg_fig)
+
+# --- F. export the main figure ----------------------------------------------
+plt.tight_layout()
+g_world.savefig("../data/bubbles_lowess_worldwide.png", dpi=600)
+g_world.savefig("../data/bubbles_lowess_worldwide.svg")
