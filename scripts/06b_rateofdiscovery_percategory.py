@@ -91,11 +91,26 @@ for cat in categories:
 
     ## Stacked: total (grey) and positive (colour)
     fig, ax = plt.subplots(figsize=(10, 3))
-    non_pos = tot_df[cat] - pos_df[cat]
+    pos_tot = pos_df[cat]                 
+    non_pos = tot_df[cat] - pos_tot # grey layer = total – positive
 
-    ax.bar(tot_df.index.astype(str), non_pos, color="#CCCCCC", width=0.9, label="Total sampling")
-    ax.bar(tot_df.index.astype(str), pos_df[cat], bottom=non_pos,
-           color=cat2color[cat], width=0.9, label="AMR-positive")
+    x = np.arange(len(tot_df.index))
+    w = 0.42
+
+    # draw grey for every quarter; draw coloured layer only if >0
+    # always draw the grey layer
+    ax.bar(x,
+       non_pos.values,
+       color="#CCCCCC",
+       label="No AMR detection samples")
+
+    # draw the coloured overlay only on quarters that have ≥1 positive
+    mask = pos_tot.values > 0          # boolean array same length as x
+    ax.bar(x[mask],
+       pos_tot.values[mask],       # positive heights for those quarters
+       bottom=non_pos.values[mask],
+       color=cat2color[cat],
+       label="AMR-positive")
 
     ax.set_title(f"{cat} SRA total and AMR-positive timeline")
     ax.set_xlabel("")
