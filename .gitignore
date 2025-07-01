@@ -1,4 +1,7 @@
 data/
 test_scripts/
 log/
-plasmids/
+plasmids/data
+plasmids/results
+plasmids/test_scripts
+plasmids/log
