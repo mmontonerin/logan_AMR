@@ -30,9 +30,6 @@ def date_collection_metagenome(df):
 df = pd.read_csv(input_file, low_memory=False)
 df = date_collection_metagenome(df)
 
-# one extra line → we still need quarters for the timeline
-df["quarter_bin"] = df["collection_date_sam"].dt.to_period("Q")
-
 # lowercase helper columns for matching
 df["_drug_lower"]    = df["ARO_DrugClass"].str.lower().fillna("")
 df["_genefam_lower"] = df["AMR_GeneFamily"].str.lower().fillna("")
@@ -44,15 +41,15 @@ all_quarters = pd.period_range(df["quarter_bin"].min(),
 
 # Stick to 2016 - 2022 as it has the most reliable data
 # We also have the antibiotic usage data only for that period
-start_q = pd.Period("2016Q1", freq="Q")
-end_q   = pd.Period("2022Q4", freq="Q")
+start_q = pd.Period("2016")
+end_q   = pd.Period("2022")
 
 # keep only quarters inside the window
 all_quarters = all_quarters[(all_quarters >= start_q) & (all_quarters <= end_q)]
 
 # if no data fall in that range, skip plotting
 if all_quarters.empty:
-    raise ValueError("No quarters between 2016Q1 and 2022Q4 in the data")
+    raise ValueError("No data between 2016 and 2022 in the dataset")
 
 # ------------------------------------------------------------------
 # 2  DRUG CLASS DEFINITIONS
