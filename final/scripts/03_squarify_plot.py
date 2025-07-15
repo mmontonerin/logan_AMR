@@ -7,7 +7,7 @@ import squarify
 # 1. file locations
 # ────────────────────────────────────────────────────────────────
 total_csv = Path("../data/SRA_metadata_before20231211_logan_extended.csv")
-amr_csv   = Path("../data/card_metadata_aro_informativecolumns.csv")
+amr_csv   = Path("../data/card_metadata_aro_informativecolumns_minimal.csv")
 
 total_df = pd.read_csv(total_csv, dtype=str, low_memory=False)
 amr_df   = pd.read_csv(amr_csv, dtype=str, low_memory=False)

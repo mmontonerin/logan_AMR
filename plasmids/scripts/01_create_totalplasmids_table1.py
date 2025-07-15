@@ -16,6 +16,7 @@ sra_columns_to_keep = [
     "bioproject",
     "biosample",
     "organism",
+    "librarysource",
     "collection_date_sam",
     "geo_loc_name_country_calc",
     "geo_loc_name_country_continent_calc"
