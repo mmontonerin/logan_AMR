@@ -46,7 +46,7 @@ I used the script 01_sam_to_csv.py to create a CSV table from the SAM CARD align
 I also selected out those alignments of less than 100 bp and of lower alignment identity threshold than 80%.
 
 
-## Merge metadata with card-alignment CSV table
+## 2. Merge metadata with card-alignment CSV table
 
 I used the script 02_merge_metadata2.py to do that. I also keeps track of progress.
 Note, minimum of 45 GB RAM memory needed to store SRA_metadata.csv into memory as dictionary. 
@@ -66,49 +66,99 @@ Rows with ALL metadata missing: 828884
 Unique accessions with ALL metadata missing: 7463
 ```
 
-## Merge ARO data with card-alignment-metadata CSV table
-Using the script 04a_merge_aro_card.py
+## 4. Merge ARO data with card-alignment-metadata CSV table
+Using the script 04_merge_aro_card.py
 It also contains a progress tracker. Used an ec2 r7a.2xlarge instance.
 
 ```
-python -u 04a_merge_aro_card.py > merge_arocard.log 2>&1 &
+python -u 04_merge_aro_card.py > merge_arocard.log 2>&1 &
 
 # Keep track of progress:
 tail -f merge_arocard.log
 ```
 
-## Merge updated geolocation data
-Using the script 04b_merge_new_geolocation.py
-It also contains a progress tracker. Used an ec2 r7a.2xlarge instance.
+## 5. Extended informative columns on organism type and metagenome category
+
+Add informative columns to both SRA and AMR detected tables
+```
+# In AMR table
+# Create full extended table
+python 05b_informative_columns_AMRtotal_extended.py
+
+# Create minimal table to limit size of table for some specific plots:
+python 05b_informative_columns_AMRtotal_minimal.py
+
+# In SRA table
+python 05c_informative_columns_SRAtotal.py
+```
+
+It creates two new columns:
+* metagenome_category, which classifies metagenome samples into the more abundant groups
+```
+# Found in column organism
+categories = {
+    "human": [
+        "human gut metagenome", "human metagenome", "human oral metagenome", "human skin metagenome",
+        "human feces metagenome", "human vaginal metagenome", "human nasopharyngeal metagenome", 
+        "human lung metagenome", "human saliva metagenome", "human reproductive system metagenome", 
+        "human urinary tract metagenome", "human eye metagenome", "human blood metagenome", 
+        "human bile metagenome", "human tracheal metagenome", "human brain metagenome", 
+        "human milk metagenome", "human semen metagenome", "human skeleton metagenome"
+    ],
+    "livestock": [
+        "bovine gut metagenome", "bovine metagenome", "pig gut metagenome", "pig metagenome", 
+        "chicken gut metagenome", "chicken metagenome", "sheep gut metagenome", "sheep metagenome"
+    ],
+    "marine": ["marine metagenome", "seawater metagenome"],
+    "freshwater": ["freshwater metagenome", "lake water metagenome", "groundwater metagenome"],
+    "soil": ["soil metagenome"],
+    "wastewater": ["wastewater metagenome"]
+}
+
+# Found in column librarysource, when organism is named after the host:
+categories_sp = {
+    "livestock": [
+        "Sus scrofa", "Sus scrofa domesticus", "Sus scrofa affinis", "Bos taurus", "Gallus gallus", "Equus caballus", 
+        "Equs caballus", "Ovis aries", "Ovis", "Bos indicus", "Bos mutus", "Bos primigenius", "Bos frontalis",
+        "Bos gaurus", "Gallus", "Capra hircus", "Capra aegagrus", "Capra ibex"
+    ],
+    "human": [
+        "Homo sapiens"
+    ]  
+}
+```
+
+* organism_type, which identifies samples as Metagenome or Isolate
+```
+# Isolate to be classified whenever column organism does not contain the word metagenome or column library source does not contain METAGENOMIC / TRANSCRIPTOMIC
+```
+
+## 6. Table filters for specific plots
 
 ```
-python -u 04b_merge_new_geolocation.py > merge_geolocation.log 2>&1 &
-
-# Keep track of progress:
-tail -f merge_arocard.log
+# AMR:
+python 06a_cardaro_filter_metaloc_plots.py
+# SRA:
+python 06b_sra_filter_metaloc_plots.py
 ```
 
-## Table filters
-
-#### Filter out the data not containing continent nor date of sampling
-
+We also add the updated geolocation
 ```
+python 06c_merge_geolocation_to_card_202506.py
+```
+
+Filters:
+```
+# Filter out the data not containing continent nor date of sampling
 ['collection_date_sam'].notna()
 ['geo_loc_name_country_continent_calc'].notna()
 ['collection_date_sam'] != 'uncalculated'
 ['geo_loc_name_country_continent_calc'] != 'uncalculated'
-```
 
-#### Keep only metagenome data
+# Keep only metagenome data
+['organism_type'] != 'Isolate'
 
-```
-['organism'].notna()
-['organism'].str.contains("metagenome")
-```
-
-#### Only keep assay types that contain most of the genome/gene sequences
-
-```
+# Only keep assay types that contain most of the genome/gene sequences
 assay_types_to_keep = [
     "WGS",
     "WGA",
@@ -127,84 +177,43 @@ assay_types_to_keep = [
 ['assay_type'].isin(assay_types_to_keep)
 ```
 
-#### Subcluster metagenome categories
-```
-categories = {
-    "human": [
-        "human gut metagenome", "human metagenome", "human oral metagenome", "human skin metagenome",
-        "human feces metagenome", "human vaginal metagenome", "human nasopharyngeal metagenome", 
-        "human lung metagenome", "human saliva metagenome", "human reproductive system metagenome", 
-        "human urinary tract metagenome", "human eye metagenome", "human blood metagenome", 
-        "human bile metagenome", "human tracheal metagenome", "human brain metagenome", 
-        "human milk metagenome", "human semen metagenome", "human skeleton metagenome"
-    ],
-    "livestock": [
-        "bovine gut metagenome", "bovine metagenome", "pig gut metagenome", "pig metagenome", 
-        "chicken gut metagenome", "chicken metagenome", "sheep gut metagenome", "sheep metagenome"
-    ],
-    "fish": ["fish metagenome", "fish gut metagenome"],
-    "marine": ["marine metagenome", "seawater metagenome"],
-    "freshwater": ["freshwater metagenome", "lake water metagenome", "groundwater metagenome"],
-    "soil": ["soil metagenome"],
-    "wastewater": ["wastewater metagenome"],
-    "plant": ["plant metagenome", "root metagenome", "leaf metagenome"]
-} 
-```
+## Generate plots
 
-
-## Card-ARO-metadata filter
-First overall filter, including date, location, metagenome only, assay_type selection
+Square plot with density of 
+* AMR+/AMR- SRA accessions
+* AMR+ isolate/metagenome (organism type)
+* AMR+ metagenome category
 
 ```
-python -u 04c_cardaro_filter.py > cardaro_filter.log 2>&1 &
-
-# Keep track of progress:
-tail -f cardaro_filter.log
+python 07_squarify_plot.py
 ```
 
-Add cluster classification of metagenome categories
+log2 Enrichment of AMR+ vs AMR- plasmids found in metagenome categories
+Data is randomly subsampled to avoid biases caused by differences in data count
+
 ```
-python 04d_card_filter_metagenome_categories.py &
+python 08_log_enrichment_normalize.py
 ```
 
-## SRA metadata filter
-Filter out data post 11 December 2023 (the date in which Logan was run), inclusive.
+Map plot
 ```
-python 05a_SRA_metadata_filter_post_11Dec2023.py &
-```
-
-Filter out data not containing date and continent. Keep only metagenomes, and selected assay_types
-```
-python 05b_SRA_metadata_filter_date_and_continent.py &
-python 05c_SRA_metadata_filter_metagenomes.py &
-python 05d_SRA_metadata_filter_assaytype.py &
+python 09_map_plot_bubblesize.py
 ```
 
-Add cluster classification of metagenome categories
+Timeline of discovery
 ```
-python 05e_SRA_metadata_filter_metagenomecategory.py &
-```
-
-# Data accessibility:
-### SRA metadata
-```
-# SRA metadata post 2023-12-11 inclusive
-s3://serratus-merce/AMR/SRA_metadata_before20231211.csv.zst 
-# SRA metadata filtered
-s3://serratus-merce/AMR/SRA_metadata_before20231211_date_and_continent_metagenomes_assaytype.csv.zst
-# SRA metadata filtered and metagenomic clusters only
-s3://serratus-merce/AMR/SRA_metadata_allfilters.csv.zst  
-```
-### Card-ARO-metadata table
-```
-# Complete table of results, including ARO information, and extended geolocation
-s3://serratus-merce/AMR/card_metadata_aro_geolocation.csv.zst
-# Filtered table
-s3://serratus-merce/AMR/full_card_metadata_aro_allfilters.csv.zst
-# Filtered table and metagenomic clusters only
-s3://serratus-merce/AMR/full_card_metadata_aro_allfilters_metagenomes2.csv.zst
+python 10_rateofdiscovery.py
 ```
 
+Number of AMR genes detected per accession (in metagenome samples)
+Boxplot:
+```
+python 11_boxplot_amrperaccession.py
+```
+log2 enrichment:
+```
+python 11_log_amrperaccession.py
+```
 
 # Plasmids
 
@@ -261,7 +270,25 @@ Data is randomly subsampled to avoid biases caused by differences in data count
 python 03_log_enrichment_normalized.py
 ```
 
-
+# Data accessibility:
+### SRA metadata
+```
+# SRA metadata post 2023-12-11 inclusive
+s3://serratus-merce/AMR/SRA_metadata_before20231211.csv.zst 
+# SRA metadata filtered
+s3://serratus-merce/AMR/SRA_metadata_before20231211_date_and_continent_metagenomes_assaytype.csv.zst
+# SRA metadata filtered and metagenomic clusters only
+s3://serratus-merce/AMR/SRA_metadata_allfilters.csv.zst  
+```
+### Card-ARO-metadata table
+```
+# Complete table of results, including ARO information, and extended geolocation
+s3://serratus-merce/AMR/card_metadata_aro_geolocation.csv.zst
+# Filtered table
+s3://serratus-merce/AMR/full_card_metadata_aro_allfilters.csv.zst
+# Filtered table and metagenomic clusters only
+s3://serratus-merce/AMR/full_card_metadata_aro_allfilters_metagenomes2.csv.zst
+```
 
 
 
