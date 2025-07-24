@@ -205,3 +205,66 @@ s3://serratus-merce/AMR/full_card_metadata_aro_allfilters.csv.zst
 s3://serratus-merce/AMR/full_card_metadata_aro_allfilters_metagenomes2.csv.zst
 ```
 
+
+# Plasmids
+
+Data used for this analysis was provided by Antonio Camargo, from his pipeline of plasmid discovery from logan contigs.
+The AMR detection in plasmids was done with AMRFinderPlus.
+
+### Initial data: 
+```
+# All AMR genes found in plasmids
+s3://serratus-merce/AMR/argnorm_output.tsv.zst
+# All plasmids
+s3://serratus-merce/AMR/plasmid_data.tsv.zst 
+```
+
+### Pipeline
+Scripts found in all_scripts_forAMRfigure/plasmids
+
+#### 1. Create tables
+
+Create table of plasmids with selected SRA metadata
+```
+python 01_create_totalplasmids_table1.py
+```
+
+Add SRA metadata to AMR detection table
+```
+python 01b_amrpositive_table.py
+```
+
+Add extended data (geolocation, as well as organism type, and metagenome category columns)
+```
+# On AMR positive table
+python 01c_metagenomecategory_amr_extended.py
+
+# On full plasmids table
+python 01c_metagenomecategory_extended.py
+```
+
+#### 2. Generate plots
+
+Ring plot with density of 
+* AMR+/AMR- plasmids
+* AMR+ isolate/metagenome (organism type)
+* AMR+ metagenome category
+  
+```
+python 02_ring_plot_plasmids.py
+```
+
+Enrichment of AMR+ vs AMR- plasmids found in metagenome categories
+Data is randomly subsampled to avoid biases caused by differences in data count
+
+```
+python 03_log_enrichment_normalized.py
+```
+
+
+
+
+
+
+
+
