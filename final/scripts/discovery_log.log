@@ -1,0 +1,8 @@
+Number of entries in seen: 600
+First 5 seen keys: [(Period('2000Q1', 'Q-DEC'), 'other'), (Period('2000Q2', 'Q-DEC'), 'other'), (Period('2001Q4', 'Q-DEC'), 'other'), (Period('2002Q2', 'Q-DEC'), 'other'), (Period('2002Q3', 'Q-DEC'), 'other')]
+Categories in quarter_cat: ['freshwater', 'human', 'livestock', 'marine', 'other', 'soil', 'wastewater']
+Assigned colors: ['#a1c65d', '#936fac', '#fac723', '#0cb2af', '#dedede', '#f29222', '#e95e50']
+Number of entries in seen: 600
+First 5 seen keys: [(Period('2000Q1', 'Q-DEC'), 'other'), (Period('2000Q2', 'Q-DEC'), 'other'), (Period('2001Q4', 'Q-DEC'), 'other'), (Period('2002Q2', 'Q-DEC'), 'other'), (Period('2002Q3', 'Q-DEC'), 'other')]
+Categories in quarter_cat: ['freshwater', 'human', 'livestock', 'marine', 'other', 'soil', 'wastewater']
+Assigned colors: ['#a1c65d', '#936fac', '#fac723', '#0cb2af', '#dedede', '#f29222', '#e95e50']

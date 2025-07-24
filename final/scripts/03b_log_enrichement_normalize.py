@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 # -------------------------------------------------
 total_file = "../data/SRA_metadata_before20231211_logan_extended.csv" # all SRA
 amr_file   = "../data/card_metadata_aro_informativecolumns_minimal.csv" # AMR-positive subset
-plot_png1   = "../data/amr_metagenome_enrichment.png"
-plot_svg1   = "../data/amr_metagenome_enrichment.svg"
+plot_png1   = "../data/amr_metagenome_enrichment_sq.png"
+plot_svg1   = "../data/amr_metagenome_enrichment_sq.svg"
 plot_png2   = "../data/amr_organism_enrichment.png"
 plot_svg2   = "../data/amr_organism_enrichment.svg"
 
@@ -155,7 +155,7 @@ cats_plot = enrichment.sort_values().index
 vals      = enrichment.loc[cats_plot]
 colors    = [palette.get(cat, "#bbbbbb") for cat in cats_plot]
 
-fig, ax = plt.subplots(figsize=(7, 4))
+fig, ax = plt.subplots(figsize=(4, 4))
 ax.barh(cats_plot, vals, color=colors, edgecolor="black", alpha=0.9)
 ax.axvline(0, color="black", linewidth=1)
 

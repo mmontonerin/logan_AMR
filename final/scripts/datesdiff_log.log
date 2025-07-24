@@ -1,0 +1,18 @@
+/home/mmn/AMR/final/scripts/10_testscript_releasevscollection.py:70: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+  sns.boxplot(
+/home/mmn/AMR/final/scripts/10_testscript_releasevscollection.py:70: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+  sns.boxplot(
+SRA Samples: Time to Release by Organism Type
+Mean Isolate days to release: 342.87933800885554
+Mean Metagenome days to release: 1234.7976290573629
+Mean difference (Metagenome - Isolate): 891.9182910485074
+CARD Samples: Time to Release by Organism Type
+Mean Isolate days to release: 1044.8944823227298
+Mean Metagenome days to release: 1243.729108520097
+Mean difference (Metagenome - Isolate): 198.83462619736724

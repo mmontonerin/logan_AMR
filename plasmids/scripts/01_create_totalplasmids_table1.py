@@ -19,7 +19,8 @@ sra_columns_to_keep = [
     "librarysource",
     "collection_date_sam",
     "geo_loc_name_country_calc",
-    "geo_loc_name_country_continent_calc"
+    "geo_loc_name_country_continent_calc",
+    "releasedate"
 ]
 
 merged_db = (

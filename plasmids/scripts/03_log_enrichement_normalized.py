@@ -7,10 +7,10 @@ import matplotlib.pyplot as plt
 # -------------------------------------------------
 total_file = "../data/plasmids_sra_metadata_extended.csv" # all plasmids
 amr_file   = "../data/amr_metadata_extended.csv" # AMR-positive subset
-plot_png1   = "../data/amr_metagenome_enrichment_norm.png"
-plot_svg1   = "../data/amr_metagenome_enrichment_norm.svg"
-plot_png2   = "../data/amr_organism_enrichment_norm.png"
-plot_svg2   = "../data/amr_organism_enrichment_norm.svg"
+plot_png1   = "../data/amr_metagenome_enrichment_norm_sq.png"
+plot_svg1   = "../data/amr_metagenome_enrichment_norm_sq.svg"
+plot_png2   = "../data/amr_organism_enrichment_norm_sq.png"
+plot_svg2   = "../data/amr_organism_enrichment_norm_sq.svg"
 
 rng = np.random.default_rng(42)          # reproducible random seed
 
@@ -61,7 +61,7 @@ cats_plot = enrichment_org.sort_values().index
 vals      = enrichment_org.loc[cats_plot]
 colors    = [palette_org.get(c, "#bbbbbb") for c in cats_plot]
 
-fig, ax = plt.subplots(figsize=(7, 4))
+fig, ax = plt.subplots(figsize=(4, 4))
 ax.barh(cats_plot, vals, color=colors, edgecolor="black", alpha=0.9)
 ax.axvline(0, color="black", linewidth=1)
 
@@ -135,7 +135,7 @@ cats_plot = enrichment_meta.sort_values().index
 vals      = enrichment_meta.loc[cats_plot]
 colors    = [palette_meta.get(c, "#bbbbbb") for c in cats_plot]
 
-fig, ax = plt.subplots(figsize=(7, 4))
+fig, ax = plt.subplots(figsize=(4, 4))
 ax.barh(cats_plot, vals, color=colors, edgecolor="black", alpha=0.9)
 ax.axvline(0, color="black", linewidth=1)
 
