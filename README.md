@@ -273,22 +273,35 @@ python 03_log_enrichment_normalized.py
 # Data accessibility:
 ### SRA metadata
 ```
-# SRA metadata post 2023-12-11 inclusive
-s3://serratus-merce/AMR/SRA_metadata_before20231211.csv.zst 
-# SRA metadata filtered
-s3://serratus-merce/AMR/SRA_metadata_before20231211_date_and_continent_metagenomes_assaytype.csv.zst
-# SRA metadata filtered and metagenomic clusters only
-s3://serratus-merce/AMR/SRA_metadata_allfilters.csv.zst  
+# SRA metadata post 2023-12-11 inclusive, only data present in logan
+s3://serratus-merce/AMR/SRA_metadata_before20231211_logan.csv.zst
+# SRA metadata extended columns
+s3://serratus-merce/AMR/s3://serratus-merce/AMR/SRA_metadata_before20231211_logan_extended.csv.zst
+# SRA metadata filtered and metagenomic only
+s3://serratus-merce/AMR/SRA_metadata_before20231211_logan_dateloc_meta.csv.zst 
 ```
 ### Card-ARO-metadata table
 ```
-# Complete table of results, including ARO information, and extended geolocation
-s3://serratus-merce/AMR/card_metadata_aro_geolocation.csv.zst
-# Filtered table
-s3://serratus-merce/AMR/full_card_metadata_aro_allfilters.csv.zst
-# Filtered table and metagenomic clusters only
-s3://serratus-merce/AMR/full_card_metadata_aro_allfilters_metagenomes2.csv.zst
+# Complete AMR table with extended columns
+s3://serratus-merce/AMR/card_metadata_aro_extended.csv.zst
+# Only informative columns needed for specific plots
+s3://serratus-merce/AMR/card_metadata_aro_informativecolumns_minimal.csv.zst
+# Filtered table, only metagenomics
+s3://serratus-merce/AMR/card_metadata_aro_dateloc_meta.csv.zst
+# Filtered table, only metagenomics, and new geolocation
+s3://serratus-merce/AMR/card_metadata_aro_dateloc_meta_latlon.csv.zst
 ```
+### Plasmids datasets
+```
+# Plasmids data
+s3://serratus-merce/AMR/plasmid_data.tsv.zst
+# AMR detected in plasmids table
+s3://serratus-merce/AMR/argnorm_output.tsv.zst
+# Plasmids data extended columns 
+s3://serratus-merce/AMR/plasmids_sra_metadata_extended.csv.zst
+# AMR+ plasmids extended columns
+s3://serratus-merce/AMR/amr_metadata_extended.csv.zst
+``` 
 
 
 
