@@ -274,33 +274,33 @@ python 03_log_enrichment_normalized.py
 ### SRA metadata
 ```
 # SRA metadata post 2023-12-11 inclusive, only data present in logan
-s3://serratus-merce/AMR/SRA_metadata_before20231211_logan.csv.zst
+s3://serratus-merce/AMR/AMR/SRA_metadata_before20231211_logan.csv.zst
 # SRA metadata extended columns
-s3://serratus-merce/AMR/s3://serratus-merce/AMR/SRA_metadata_before20231211_logan_extended.csv.zst
+s3://serratus-merce/AMR/AMR/SRA_metadata_before20231211_logan_extended.csv.zst
 # SRA metadata filtered and metagenomic only
-s3://serratus-merce/AMR/SRA_metadata_before20231211_logan_dateloc_meta.csv.zst 
+s3://serratus-merce/AMR/AMR/SRA_metadata_before20231211_logan_dateloc_meta.csv.zst 
 ```
 ### Card-ARO-metadata table
 ```
 # Complete AMR table with extended columns
-s3://serratus-merce/AMR/card_metadata_aro_extended.csv.zst
+s3://serratus-merce/AMR/AMR/card_metadata_aro_extended.csv.zst
 # Only informative columns needed for specific plots
-s3://serratus-merce/AMR/card_metadata_aro_informativecolumns_minimal.csv.zst
+s3://serratus-merce/AMR/AMR/card_metadata_aro_informativecolumns_minimal.csv.zst
 # Filtered table, only metagenomics
-s3://serratus-merce/AMR/card_metadata_aro_dateloc_meta.csv.zst
+s3://serratus-merce/AMR/AMR/card_metadata_aro_dateloc_meta.csv.zst
 # Filtered table, only metagenomics, and new geolocation
-s3://serratus-merce/AMR/card_metadata_aro_dateloc_meta_latlon.csv.zst
+s3://serratus-merce/AMR/AMR/card_metadata_aro_dateloc_meta_latlon.csv.zst
 ```
 ### Plasmids datasets
 ```
 # Plasmids data
-s3://serratus-merce/AMR/plasmid_data.tsv.zst
+s3://serratus-merce/AMR/plasmids/plasmid_data.tsv.zst
 # AMR detected in plasmids table
-s3://serratus-merce/AMR/argnorm_output.tsv.zst
+s3://serratus-merce/AMR/plasmids/argnorm_output.tsv.zst
 # Plasmids data extended columns 
-s3://serratus-merce/AMR/plasmids_sra_metadata_extended.csv.zst
+s3://serratus-merce/AMR/plasmids/plasmids_sra_metadata_extended.csv.zst
 # AMR+ plasmids extended columns
-s3://serratus-merce/AMR/amr_metadata_extended.csv.zst
+s3://serratus-merce/AMR/plasmids/amr_metadata_extended.csv.zst
 ``` 
 
 
